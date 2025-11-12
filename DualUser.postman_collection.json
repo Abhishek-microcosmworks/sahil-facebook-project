@@ -1,0 +1,272 @@
+{
+    "info": {
+      "name": "Facebook API — Dual User (Final Full Flow)",
+      "_postman_id": "fb-dual-final-collection",
+      "description": "Full dual-user interaction flow for testing Facebook backend: Register, Login, Create Posts, Comment, Like, and Friend Requests.",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "👤 User1 • Register & Login",
+        "item": [
+          {
+            "name": "User1 • Register",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "let r = pm.response.json();",
+                    "pm.environment.set('user1Token', r.token);",
+                    "pm.environment.set('user1Id', r.user?._id);"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"User One\",\n  \"username\": \"userone\",\n  \"email\": \"one@example.com\",\n  \"password\": \"123456\"\n}"
+              },
+              "url": "http://localhost:5000/api/auth/register"
+            }
+          },
+          {
+            "name": "User1 • Login",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "let r = pm.response.json();",
+                    "pm.environment.set('user1Token', r.token);",
+                    "pm.environment.set('user1Id', r.user?._id);"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"usernameOrEmail\": \"userone\",\n  \"password\": \"123456\"\n}"
+              },
+              "url": "http://localhost:5000/api/auth/login"
+            }
+          }
+        ]
+      },
+      {
+        "name": "🖼 User1 • Uploads & Post",
+        "item": [
+          {
+            "name": "User1 • Upload Post Image",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "let r = pm.response.json();",
+                    "pm.environment.set('postImageUrl', r.url);"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Authorization", "value": "Bearer {{user1Token}}" }],
+              "body": {
+                "mode": "formdata",
+                "formdata": [{ "key": "file", "type": "file", "src": "" }]
+              },
+              "url": "http://localhost:5000/api/posts/upload"
+            }
+          },
+          {
+            "name": "User1 • Create Post (with image)",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "let r = pm.response.json();",
+                    "pm.environment.set('postId', r.post?._id);"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                { "key": "Authorization", "value": "Bearer {{user1Token}}" },
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"content\": \"Hello from User1 with an image!\",\n  \"image_url\": \"{{postImageUrl}}\"\n}"
+              },
+              "url": "http://localhost:5000/api/posts"
+            }
+          }
+        ]
+      },
+      {
+        "name": "👤 User2 • Register & Login",
+        "item": [
+          {
+            "name": "User2 • Register",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "let r = pm.response.json();",
+                    "pm.environment.set('user2Id', r.user?._id);"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"User Two\",\n  \"username\": \"usertwo\",\n  \"email\": \"two@example.com\",\n  \"password\": \"123456\"\n}"
+              },
+              "url": "http://localhost:5000/api/auth/register"
+            }
+          },
+          {
+            "name": "User2 • Login",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "let r = pm.response.json();",
+                    "pm.environment.set('user2Token', r.token);",
+                    "pm.environment.set('user2Id', r.user?._id);"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"usernameOrEmail\": \"usertwo\",\n  \"password\": \"123456\"\n}"
+              },
+              "url": "http://localhost:5000/api/auth/login"
+            }
+          }
+        ]
+      },
+      {
+        "name": "💬 User2 • Interacts with User1",
+        "item": [
+          {
+            "name": "User2 • Like User1’s Post",
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Authorization", "value": "Bearer {{user2Token}}" }],
+              "url": "http://localhost:5000/api/posts/{{postId}}/like"
+            }
+          },
+          {
+            "name": "User2 • Comment on User1’s Post",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "let r = pm.response.json();",
+                    "pm.environment.set('commentId', r.data?._id);"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                { "key": "Authorization", "value": "Bearer {{user2Token}}" },
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"post_id\": \"{{postId}}\",\n  \"text\": \"Nice post, User1! 👏\"\n}"
+              },
+              "url": "http://localhost:5000/api/comments"
+            }
+          },
+          {
+            "name": "User2 • Like User1’s Comment",
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Authorization", "value": "Bearer {{user2Token}}" }],
+              "url": "http://localhost:5000/api/comments/{{commentId}}/like"
+            }
+          },
+          {
+            "name": "User2 • Send Friend Request to User1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "let r = pm.response.json();",
+                    "pm.environment.set('requestId', r.data?._id);"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                { "key": "Authorization", "value": "Bearer {{user2Token}}" },
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"receiver_id\": \"{{user1Id}}\"\n}"
+              },
+              "url": "http://localhost:5000/api/friends/request"
+            }
+          }
+        ]
+      },
+      {
+        "name": "🤝 User1 • Accepts Friend Request",
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Authorization", "value": "Bearer {{user1Token}}" }],
+          "url": "http://localhost:5000/api/friends/accept/{{requestId}}"
+        }
+      },
+      {
+        "name": "📜 Check Friends Lists",
+        "item": [
+          {
+            "name": "User1 • Friends List",
+            "request": {
+              "method": "GET",
+              "header": [{ "key": "Authorization", "value": "Bearer {{user1Token}}" }],
+              "url": "http://localhost:5000/api/friends"
+            }
+          },
+          {
+            "name": "User2 • Friends List",
+            "request": {
+              "method": "GET",
+              "header": [{ "key": "Authorization", "value": "Bearer {{user2Token}}" }],
+              "url": "http://localhost:5000/api/friends"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  

@@ -1,0 +1,284 @@
+{
+    "info": {
+      "name": "Facebook API — Single User (Final)",
+      "_postman_id": "fb-single-final-collection",
+      "description": "Full single-user flow for testing Facebook backend: Register → Login → Uploads → Posts → Likes → Comments → Friends → Settings → Notifications.",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+  
+      {
+        "name": "Auth • Register",
+        "event": [{
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let r = pm.response.json();",
+              "pm.environment.set('token', r.token);",
+              "pm.environment.set('userId', r.user?._id);"
+            ]
+          }
+        }],
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"name\": \"Test User\",\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\"\n}"
+          },
+          "url": "http://localhost:5000/api/auth/register"
+        }
+      },
+  
+      {
+        "name": "Auth • Login",
+        "event": [{
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let r = pm.response.json();",
+              "pm.environment.set('token', r.token);",
+              "pm.environment.set('userId', r.user?._id);"
+            ]
+          }
+        }],
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"usernameOrEmail\": \"testuser\",\n  \"password\": \"123456\"\n}"
+          },
+          "url": "http://localhost:5000/api/auth/login"
+        }
+      },
+  
+      {
+        "name": "User • My Profile",
+        "request": {
+          "method": "GET",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "url": "http://localhost:5000/api/users/me"
+        }
+      },
+  
+      {
+        "name": "Upload • Profile Picture",
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "body": {
+            "mode": "formdata",
+            "formdata": [{ "key": "file", "type": "file", "src": "" }]
+          },
+          "url": "http://localhost:5000/api/users/upload/profile"
+        }
+      },
+  
+      {
+        "name": "Upload • Cover Photo",
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "body": {
+            "mode": "formdata",
+            "formdata": [{ "key": "file", "type": "file", "src": "" }]
+          },
+          "url": "http://localhost:5000/api/users/upload/cover"
+        }
+      },
+  
+      {
+        "name": "Upload • Post Image",
+        "event": [{
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let r = pm.response.json();",
+              "pm.environment.set('postImageUrl', r.url);"
+            ]
+          }
+        }],
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "body": {
+            "mode": "formdata",
+            "formdata": [{ "key": "file", "type": "file", "src": "" }]
+          },
+          "url": "http://localhost:5000/api/posts/upload"
+        }
+      },
+  
+      {
+        "name": "Posts • Create (with image)",
+        "event": [{
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let r = pm.response.json();",
+              "pm.environment.set('postId', r.post?._id);"
+            ]
+          }
+        }],
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"content\": \"My first post with an image!\",\n  \"image_url\": \"{{postImageUrl}}\"\n}"
+          },
+          "url": "http://localhost:5000/api/posts"
+        }
+      },
+  
+      {
+        "name": "Posts • Get My Feed",
+        "request": {
+          "method": "GET",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "url": "http://localhost:5000/api/posts"
+        }
+      },
+  
+      {
+        "name": "Posts • Get My Posts",
+        "request": {
+          "method": "GET",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "url": "http://localhost:5000/api/posts/me"
+        }
+      },
+  
+      {
+        "name": "Posts • Get Liked Posts",
+        "request": {
+          "method": "GET",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "url": "http://localhost:5000/api/posts/liked"
+        }
+      },
+  
+      {
+        "name": "Posts • Like",
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "url": "http://localhost:5000/api/posts/{{postId}}/like"
+        }
+      },
+  
+      {
+        "name": "Comments • Add",
+        "event": [{
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let r = pm.response.json();",
+              "pm.environment.set('commentId', r.data?._id);"
+            ]
+          }
+        }],
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"post_id\": \"{{postId}}\",\n  \"text\": \"Nice post!\"\n}"
+          },
+          "url": "http://localhost:5000/api/comments"
+        }
+      },
+  
+      {
+        "name": "Comments • Reply",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"comment_id\": \"{{commentId}}\",\n  \"text\": \"Thanks for your comment!\"\n}"
+          },
+          "url": "http://localhost:5000/api/comments/reply"
+        }
+      },
+  
+      {
+        "name": "Friends • Send Friend Request",
+        "event": [{
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let r = pm.response.json();",
+              "pm.environment.set('requestId', r.data?._id);"
+            ]
+          }
+        }],
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"receiver_id\": \"{{userId}}\"\n}"
+          },
+          "url": "http://localhost:5000/api/friends/request"
+        }
+      },
+  
+      {
+        "name": "Friends • Accept Request",
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "url": "http://localhost:5000/api/friends/accept/{{requestId}}"
+        }
+      },
+  
+      {
+        "name": "Friends • List",
+        "request": {
+          "method": "GET",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "url": "http://localhost:5000/api/friends"
+        }
+      },
+  
+      {
+        "name": "Settings • Update",
+        "request": {
+          "method": "PUT",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"allow_tagging\": true,\n  \"language\": \"en\",\n  \"country\": \"India\"\n}"
+          },
+          "url": "http://localhost:5000/api/settings"
+        }
+      },
+  
+      {
+        "name": "Notifications • Get All",
+        "request": {
+          "method": "GET",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "url": "http://localhost:5000/api/notifications"
+        }
+      }
+    ]
+  }
+  
