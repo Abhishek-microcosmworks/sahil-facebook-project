@@ -27,6 +27,106 @@
 - cors
 - morgan
 
+<<<<<<< HEAD
+=======
+## 📁 Project Folder Structure
+```
+backend-facebook-project/
+│
+├── src/
+│   ├── app.js
+│   ├── server.js
+│   ├── seed.js
+│   │
+│   ├── config/
+│   │   ├── db.js
+│   │   └── env.js
+│   │
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Post.js
+│   │   ├── Comment.js
+│   │   ├── Reply.js
+│   │   ├── PostLike.js
+│   │   ├── CommentLike.js
+│   │   ├── Friend.js
+│   │   ├── FriendRequest.js
+│   │   ├── Share.js
+│   │   ├── BlockedUser.js
+│   │   ├── UserSettings.js
+│   │   └── Token.js
+│   │
+│   ├── controllers/
+│   │   ├── auth.controller.js
+│   │   ├── user.controller.js
+│   │   ├── post.controller.js
+│   │   ├── comment.controller.js
+│   │   ├── friend.controller.js
+│   │   ├── settings.controller.js
+│   │   └── upload.middleware.js
+│   │
+│   ├── services/
+│   │   ├── auth.service.js
+│   │   ├── user.service.js
+│   │   ├── post.service.js
+│   │   ├── comment.service.js
+│   │   ├── friend.service.js
+│   │   └── settings.service.js
+│   │
+│   ├── routes/
+│   │   ├── index.js
+│   │   ├── auth.routes.js
+│   │   ├── user.routes.js
+│   │   ├── post.routes.js
+│   │   ├── comment.routes.js
+│   │   └── friend.routes.js
+│   │
+│   ├── middleware/
+│   │   ├── auth.middleware.js
+│   │   ├── upload.middleware.js
+│   │   ├── validate.middleware.js
+│   │   ├── error.middleware.js
+│   │   └── notFound.middleware.js
+│   │
+│   ├── validations/
+│   │   ├── auth.validation.js
+│   │   ├── user.validation.js
+│   │   ├── comment.validation.js
+│   │   └── friend.validation.js
+│   │
+│   ├── utils/
+│   │   ├── jwt.js
+│   │   ├── bcrypt.js
+│   │   ├── apiResponse.js
+│   │   ├── asyncHandler.js
+│   │   └── constants.js
+│   │
+│   ├── uploads/
+│   │   ├── profiles/
+│   │   ├── covers/
+│   │   └── posts/
+│   │
+│   ├── logs/
+│   │   ├── app.log
+│   │   └── error.log
+│   │
+│   └── tests/
+│       ├── setup.js
+│       └── auth.test.js
+│
+├── node_modules/
+│
+├── .git/
+│
+├── .gitignore
+├── .env
+├── package.json
+├── package-lock.json
+├── SingleUser.postman_collection.json
+├── DualUser.postman_collection.json
+└── Readme.md
+```
+>>>>>>> 64757fe (Update Readme.md and server.js)
 ---
 
 ## 🔧 Environment Variables (.env)

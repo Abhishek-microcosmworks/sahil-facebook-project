@@ -1,41 +1,62 @@
+// import express from "express";
+// import auth from "../middleware/auth.middleware.js";
+// import { uploadPostFile } from "../middleware/upload.middleware.js";
+// import {
+//   createPost,
+//   getPosts,
+//   getMyPosts,
+//   getUserPosts,
+//   likePost,
+//   sharePost,
+//   deletePost
+// } from "../controllers/post.controller.js";
+
+// const router = express.Router();
+
+// // ✅ Create post (with image/video directly)
+// router.post("/", auth, uploadPostFile.single("file"), createPost);
+
+// // ✅ Get feed, own posts, user posts
+// router.get("/", auth, getPosts);
+// router.get("/me", auth, getMyPosts);
+// router.get("/user/:identifier", auth, getUserPosts);
+
+// // ✅ Like, Share, Delete
+// router.post("/:id/like", auth, likePost);
+// router.post("/:id/share", auth, sharePost);
+// router.delete("/:id", auth, deletePost);
+
+// export default router;
+
 import express from "express";
 import auth from "../middleware/auth.middleware.js";
-import upload from "../middleware/upload.middleware.js";
+import { uploadPostFile } from "../middleware/upload.middleware.js";
 import {
-  uploadPostImage,
   createPost,
   getPosts,
-  getMyPosts,       // ✅ new import
-  getUserPosts,     // ✅ new import
+  getMyPosts,
+  getUserPosts,
   likePost,
   sharePost,
-  deletePost
+  deletePost,
 } from "../controllers/post.controller.js";
 
 const router = express.Router();
 
-// ✅ Upload image for post (use key: "image" in Postman)
-router.post("/upload", auth, upload.single("image"), uploadPostImage);
+// ✅ Create post with image (uses same controller)
+router.post("/create/image", auth, uploadPostFile.single("file"), createPost);
 
-// ✅ Create new post
-router.post("/", auth, createPost);
+// ✅ Create post with video (same controller, detects type automatically)
+router.post("/create/video", auth, uploadPostFile.single("file"), createPost);
 
-// ✅ Feed: logged-in user + friends
+// ✅ Feed and profile routes
 router.get("/", auth, getPosts);
-
-// ✅ Get my own posts
 router.get("/me", auth, getMyPosts);
-
-// ✅ Get posts of a specific user (by username or userId)
 router.get("/user/:identifier", auth, getUserPosts);
 
-// ✅ Like a post
+// ✅ Like, Share, Delete
 router.post("/:id/like", auth, likePost);
-
-// ✅ Share a post
 router.post("/:id/share", auth, sharePost);
-
-// ✅ Delete a post
 router.delete("/:id", auth, deletePost);
 
 export default router;

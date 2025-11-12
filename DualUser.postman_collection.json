@@ -1,28 +1,27 @@
 {
     "info": {
-      "name": "Facebook API — Dual User (Final Full Flow)",
-      "_postman_id": "fb-dual-final-collection",
-      "description": "Full dual-user interaction flow for testing Facebook backend: Register, Login, Create Posts, Comment, Like, and Friend Requests.",
+      "name": "Facebook API — Dual User (Final + Video Support)",
+      "_postman_id": "fb-dual-video-final",
+      "description": "Full dual-user interaction flow for testing Facebook backend: Register, Login, Create Posts (image/video), Comment, Like, and Friend Requests.",
       "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
+  
       {
         "name": "👤 User1 • Register & Login",
         "item": [
           {
             "name": "User1 • Register",
-            "event": [
-              {
-                "listen": "test",
-                "script": {
-                  "exec": [
-                    "let r = pm.response.json();",
-                    "pm.environment.set('user1Token', r.token);",
-                    "pm.environment.set('user1Id', r.user?._id);"
-                  ]
-                }
+            "event": [{
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let r = pm.response.json();",
+                  "pm.environment.set('user1Token', r.token);",
+                  "pm.environment.set('user1Id', r.user?._id);"
+                ]
               }
-            ],
+            }],
             "request": {
               "method": "POST",
               "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -35,18 +34,16 @@
           },
           {
             "name": "User1 • Login",
-            "event": [
-              {
-                "listen": "test",
-                "script": {
-                  "exec": [
-                    "let r = pm.response.json();",
-                    "pm.environment.set('user1Token', r.token);",
-                    "pm.environment.set('user1Id', r.user?._id);"
-                  ]
-                }
+            "event": [{
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let r = pm.response.json();",
+                  "pm.environment.set('user1Token', r.token);",
+                  "pm.environment.set('user1Id', r.user?._id);"
+                ]
               }
-            ],
+            }],
             "request": {
               "method": "POST",
               "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -59,76 +56,79 @@
           }
         ]
       },
+  
       {
-        "name": "🖼 User1 • Uploads & Post",
+        "name": "🖼 User1 • Uploads & Posts",
         "item": [
           {
-            "name": "User1 • Upload Post Image",
-            "event": [
-              {
-                "listen": "test",
-                "script": {
-                  "exec": [
-                    "let r = pm.response.json();",
-                    "pm.environment.set('postImageUrl', r.url);"
-                  ]
-                }
+            "name": "User1 • Create Post (with image)",
+            "event": [{
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let r = pm.response.json();",
+                  "pm.environment.set('postId', r.post?._id);",
+                  "pm.environment.set('postImageUrl', r.post?.media_url);"
+                ]
               }
-            ],
+            }],
             "request": {
               "method": "POST",
               "header": [{ "key": "Authorization", "value": "Bearer {{user1Token}}" }],
               "body": {
                 "mode": "formdata",
-                "formdata": [{ "key": "file", "type": "file", "src": "" }]
+                "formdata": [
+                  { "key": "file", "type": "file", "src": "" },
+                  { "key": "content", "value": "Hello from User1 with an image! 🖼", "type": "text" },
+                  { "key": "visibility", "value": "public", "type": "text" }
+                ]
               },
-              "url": "http://localhost:5000/api/posts/upload"
+              "url": "http://localhost:5000/api/posts/create/image"
             }
           },
           {
-            "name": "User1 • Create Post (with image)",
-            "event": [
-              {
-                "listen": "test",
-                "script": {
-                  "exec": [
-                    "let r = pm.response.json();",
-                    "pm.environment.set('postId', r.post?._id);"
-                  ]
-                }
+            "name": "User1 • Create Post (with video)",
+            "event": [{
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let r = pm.response.json();",
+                  "pm.environment.set('videoPostId', r.post?._id);",
+                  "pm.environment.set('postVideoUrl', r.post?.media_url);"
+                ]
               }
-            ],
+            }],
             "request": {
               "method": "POST",
-              "header": [
-                { "key": "Authorization", "value": "Bearer {{user1Token}}" },
-                { "key": "Content-Type", "value": "application/json" }
-              ],
+              "header": [{ "key": "Authorization", "value": "Bearer {{user1Token}}" }],
               "body": {
-                "mode": "raw",
-                "raw": "{\n  \"content\": \"Hello from User1 with an image!\",\n  \"image_url\": \"{{postImageUrl}}\"\n}"
+                "mode": "formdata",
+                "formdata": [
+                  { "key": "file", "type": "file", "src": "" },
+                  { "key": "content", "value": "User1 posting a video! 🎥", "type": "text" },
+                  { "key": "visibility", "value": "public", "type": "text" }
+                ]
               },
-              "url": "http://localhost:5000/api/posts"
+              "url": "http://localhost:5000/api/posts/create/video"
             }
           }
         ]
       },
+  
       {
         "name": "👤 User2 • Register & Login",
         "item": [
           {
             "name": "User2 • Register",
-            "event": [
-              {
-                "listen": "test",
-                "script": {
-                  "exec": [
-                    "let r = pm.response.json();",
-                    "pm.environment.set('user2Id', r.user?._id);"
-                  ]
-                }
+            "event": [{
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let r = pm.response.json();",
+                  "pm.environment.set('user2Id', r.user?._id);"
+                ]
               }
-            ],
+            }],
             "request": {
               "method": "POST",
               "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -141,18 +141,16 @@
           },
           {
             "name": "User2 • Login",
-            "event": [
-              {
-                "listen": "test",
-                "script": {
-                  "exec": [
-                    "let r = pm.response.json();",
-                    "pm.environment.set('user2Token', r.token);",
-                    "pm.environment.set('user2Id', r.user?._id);"
-                  ]
-                }
+            "event": [{
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let r = pm.response.json();",
+                  "pm.environment.set('user2Token', r.token);",
+                  "pm.environment.set('user2Id', r.user?._id);"
+                ]
               }
-            ],
+            }],
             "request": {
               "method": "POST",
               "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -165,11 +163,12 @@
           }
         ]
       },
+  
       {
         "name": "💬 User2 • Interacts with User1",
         "item": [
           {
-            "name": "User2 • Like User1’s Post",
+            "name": "User2 • Like User1’s Image Post",
             "request": {
               "method": "POST",
               "header": [{ "key": "Authorization", "value": "Bearer {{user2Token}}" }],
@@ -177,18 +176,24 @@
             }
           },
           {
-            "name": "User2 • Comment on User1’s Post",
-            "event": [
-              {
-                "listen": "test",
-                "script": {
-                  "exec": [
-                    "let r = pm.response.json();",
-                    "pm.environment.set('commentId', r.data?._id);"
-                  ]
-                }
+            "name": "User2 • Like User1’s Video Post",
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Authorization", "value": "Bearer {{user2Token}}" }],
+              "url": "http://localhost:5000/api/posts/{{videoPostId}}/like"
+            }
+          },
+          {
+            "name": "User2 • Comment on User1’s Image Post",
+            "event": [{
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let r = pm.response.json();",
+                  "pm.environment.set('commentId', r.data?._id);"
+                ]
               }
-            ],
+            }],
             "request": {
               "method": "POST",
               "header": [
@@ -197,7 +202,22 @@
               ],
               "body": {
                 "mode": "raw",
-                "raw": "{\n  \"post_id\": \"{{postId}}\",\n  \"text\": \"Nice post, User1! 👏\"\n}"
+                "raw": "{\n  \"post_id\": \"{{postId}}\",\n  \"text\": \"Great image post, User1! 📸\"\n}"
+              },
+              "url": "http://localhost:5000/api/comments"
+            }
+          },
+          {
+            "name": "User2 • Comment on User1’s Video Post",
+            "request": {
+              "method": "POST",
+              "header": [
+                { "key": "Authorization", "value": "Bearer {{user2Token}}" },
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"post_id\": \"{{videoPostId}}\",\n  \"text\": \"Awesome video, User1! 🎥🔥\"\n}"
               },
               "url": "http://localhost:5000/api/comments"
             }
@@ -212,17 +232,15 @@
           },
           {
             "name": "User2 • Send Friend Request to User1",
-            "event": [
-              {
-                "listen": "test",
-                "script": {
-                  "exec": [
-                    "let r = pm.response.json();",
-                    "pm.environment.set('requestId', r.data?._id);"
-                  ]
-                }
+            "event": [{
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let r = pm.response.json();",
+                  "pm.environment.set('requestId', r.data?._id);"
+                ]
               }
-            ],
+            }],
             "request": {
               "method": "POST",
               "header": [
@@ -238,6 +256,7 @@
           }
         ]
       },
+  
       {
         "name": "🤝 User1 • Accepts Friend Request",
         "request": {
@@ -246,6 +265,7 @@
           "url": "http://localhost:5000/api/friends/accept/{{requestId}}"
         }
       },
+  
       {
         "name": "📜 Check Friends Lists",
         "item": [
