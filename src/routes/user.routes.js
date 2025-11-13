@@ -74,6 +74,9 @@ import {
   uploadProfilePicture,
   uploadCoverPhoto,
 } from "../controllers/user.controller.js";
+import { restoreAccount } from "../controllers/user.controller.js";
+
+
 
 const router = express.Router();
 
@@ -81,6 +84,7 @@ router.get("/", getAllUsers);
 router.get("/me", auth, getProfile);
 router.put("/update", auth, validate(updateUserValidation), updateProfile);
 router.get("/search", auth, searchUsers);
+router.patch("/restore", auth, restoreAccount);
 
 // ✅ Profile & Cover uploads (Images only)
 router.post("/upload/profile", auth, uploadUserImage.single("file"), uploadProfilePicture);
