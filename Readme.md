@@ -27,7 +27,6 @@
 - cors
 - morgan
 
-<<<<<<< HEAD
 =======
 ## 📁 Project Folder Structure
 ```
