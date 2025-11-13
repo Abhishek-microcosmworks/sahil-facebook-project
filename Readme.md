@@ -126,7 +126,7 @@ backend-facebook-project/
 ├── DualUser.postman_collection.json
 └── Readme.md
 ```
->>>>>>> 64757fe (Update Readme.md and server.js)
+
 ---
 
 ## 🔧 Environment Variables (.env)
